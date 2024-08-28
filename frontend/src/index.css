@@ -1,0 +1,59 @@
+/* This file contains global styles for the application and integrates Tailwind CSS. */
+
+
+/* These directives import Tailwind's base styles, components, and utility classes, 
+enabling the use of Tailwind CSS throughout the application. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* The custom styles define some global CSS properties, 
+such as font settings, background colors, and custom scrollbar styles. */
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+}
+
+#root {
+  width: 100%;
+}
+
+/* custom scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #242424;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 10px;
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
