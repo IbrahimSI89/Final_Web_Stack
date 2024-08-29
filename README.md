@@ -1,4 +1,3 @@
----
 
 # Real-Time Chat Application
 
@@ -116,6 +115,9 @@ source venv/bin/activate
 # Install dependencies
 pip3 install -r requirements.txt
 
+# Set up the database
+flask db upgrade
+
 # Run the application
 python3 run.py
 ```
@@ -167,4 +169,3 @@ python3 run.py
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-
