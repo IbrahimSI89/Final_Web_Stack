@@ -26,6 +26,27 @@ from app.extensions import db
 #       enabling them to receive messages sent to that room.
 @socketio.on("join_room")
 def join_room(data):
-    print("Joining room...")
     chat_id = data.get("chat_id")
     socketio.join_room(str(chat_id))
+
+
+
+
+@socketio.on("send_message")
+def handle_message(data):
+    chat_id = data.get("chat_id")
+    content = data.get("content")
+    sender_id = data.get("sender_id")
+
+    # Create and store the message in the database
+    message = Message(chat_id=chat_id, sender_id=sender_id, content=content)
+    db.session.add(message)
+    db.session.commit()
+
+    # Emit the message to the chat room
+    socketio.emit("new_message", {
+        "chat_id": chat_id,
+        "sender_id": sender_id,
+        "content": content,
+        "timestamp": message.timestamp.isoformat()
+    }, room=str(chat_id))

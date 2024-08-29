@@ -30,36 +30,81 @@ group_blueprint = Blueprint('group', __name__)
 @group_blueprint.route('/create', methods=['POST'])
 @jwt_required(locations=['headers'])
 
-#Creates a new group with the current user as the creator and the first member.
 def create_group():
-    current_user_id = get_jwt_identity()  # Get the authenticated user's ID
-    group_name = request.json.get('name', '')  # Get the group name from the request
-    print(group_name)
+    current_user_id = get_jwt_identity()
+    group_name = request.json.get('name', '')
+    user_ids = request.json.get('userIds', [])
+
     if not group_name:
         return jsonify({'error': 'Group name is required'}), 400
 
-    # Create a new group with the current user as the creator
     current_user = User.query.get(current_user_id)
     new_group = Group(name=group_name, creator=current_user)
-    new_group.members.append(current_user)  # Add the creator to the group
-    
+    new_group.members.append(current_user)
+
+    # Add selected users to the group
+    for user_id in user_ids:
+        user = User.query.get(user_id)
+        if user:
+            new_group.members.append(user)
+
     db.session.add(new_group)
     db.session.commit()
 
-    # return all the groups details
     return jsonify({
         'id': new_group.id,
         'name': new_group.name,
         'creator_id': new_group.creator_id,
         'created_at': new_group.created_at,
-        'members': [
-            {'id': member.id, 'name': member.name, 'email': member.email} for member in new_group.members
-        ],
-        'messages': [
-            {'id': message.id, 'sender_id': message.sender_id, 'content': message.content, 'timestamp': message.timestamp}
-            for message in new_group.messages
-        ]
+        'members': [{'id': member.id, 'name': member.name, 'email': member.email} for member in new_group.members],
+        'messages': []
     }), 201
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# #Creates a new group with the current user as the creator and the first member.
+# def create_group():
+#     current_user_id = get_jwt_identity()  # Get the authenticated user's ID
+#     group_name = request.json.get('name', '')  # Get the group name from the request
+#     print(group_name)
+#     if not group_name:
+#         return jsonify({'error': 'Group name is required'}), 400
+
+#     # Create a new group with the current user as the creator
+#     current_user = User.query.get(current_user_id)
+#     new_group = Group(name=group_name, creator=current_user)
+#     new_group.members.append(current_user)  # Add the creator to the group
+    
+#     db.session.add(new_group)
+#     db.session.commit()
+
+#     # return all the groups details
+#     return jsonify({
+#         'id': new_group.id,
+#         'name': new_group.name,
+#         'creator_id': new_group.creator_id,
+#         'created_at': new_group.created_at,
+#         'members': [
+#             {'id': member.id, 'name': member.name, 'email': member.email} for member in new_group.members
+#         ],
+#         'messages': [
+#             {'id': message.id, 'sender_id': message.sender_id, 'content': message.content, 'timestamp': message.timestamp}
+#             for message in new_group.messages
+#         ]
+#     }), 201
 
 
 

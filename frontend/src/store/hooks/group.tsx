@@ -3,39 +3,32 @@
 
 
 import { useAppStore } from "../store";
-import { Group, Member,Message } from "../types";
+import { Group, Member, Message } from "../types";
 
 export const useGroupActions = () => {
-    const {state, dispatch } = useAppStore();
+    const { state, dispatch } = useAppStore();
 
-    // Similar to the other hooks, it checks for a valid JWT token in localStorage.
     const validate = () => {
-        if (localStorage.getItem('token') && localStorage.getItem('token') !== 'undefined') {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
-    // Takes a group name as input and sends a POST request to the /group/create endpoint to create a new group.
-    // The newly created group is added to the global state with the NEW_GROUP action.
-    const create = async (name: string, selected: number[]) => {
-        validate() &&
-        fetch('http://127.0.0.1:5001/group/create', {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            },
-            body: JSON.stringify({ name, userIds })
-        })
-        .then(response => response.json())
-        .then((data:Group) => {
-            dispatch({ type: 'NEW_GROUP', payload: data });
-        });
-    }
+        return localStorage.getItem('token') !== 'undefined';
+    };
 
+    const create = async (name: string, userIds: number[]) => {
+        if (validate()) {
+            fetch('http://127.0.0.1:5001/group/create', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({ name, userIds })
+            })
+            .then(response => response.json())
+            .then((data: Group) => {
+                dispatch({ type: 'NEW_GROUP', payload: data });
+            });
+        }
+    };
     // Fetches the list of groups the authenticated user is part of by making 
     // a GET request to the / group / my_groups endpoint.
     // The fetched groups are then dispatched to the global state using the SET_GROUPS action.

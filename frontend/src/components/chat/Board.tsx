@@ -16,7 +16,7 @@
 
 
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Message from '../Message';
 import { useOpenChat } from '../../store/hooks/currentChat';
 import Input from './Input';
@@ -25,37 +25,45 @@ import socket from '../../server';
 
 // React.FC: Board is a functional component with no props.
 const Board: React.FC = () => {
-  // useOpenChat: Provides access to the current chat from the chat store.
-    const { currentChat } = useOpenChat();
-    const chat = currentChat;
-    const messages = chat?.messages;
+  const { currentChat, open } = useOpenChat();
+  const chat = currentChat;
+  const messages = chat?.messages;
 
-    // Socket.IO:
-    //    Listens for new messages via Socket.IO and updates the chat board when a new message is received.
+  useEffect(() => {
     socket.on("new_message", (data) => {
-      console.log("Received new message:", data.content);
-  });
-  
+      if (chat && data.chat_id === chat.id) {
+        const updatedChat = {
+          ...chat,
+          messages: [...chat.messages, data]
+        };
+        open(updatedChat);
+      }
+    });
 
-    return (
-      <>
-        <div className="flex flex-col h-full overflow-x-auto mb-4">
+    return () => {
+      socket.off("new_message");
+    };
+  }, [chat]);
+
+  return (
+    <>
+      <div className="flex flex-col h-full overflow-x-auto mb-4">
         <div className="flex flex-col h-full">
-            <div key={chat?.id} className="flex flex-col">
-              <div className="text-sm text-gray-500 text-center mt-4">{chat?.created_at}</div>
-              <div className="flex flex-col h-full overflow-y-auto">
-                {messages && messages.map((message) => (
-                  <Message key={message.id} message={message} />
-                  ))}
-              </div>
+          <div key={chat?.id} className="flex flex-col">
+            <div className="text-sm text-gray-500 text-center mt-4">{chat?.created_at}</div>
+            <div className="flex flex-col h-full overflow-y-auto">
+              {messages && messages.map((message) => (
+                <Message key={message.id} message={message} />
+              ))}
             </div>
+          </div>
         </div>
       </div>
       {currentChat &&
         <Input />
       }
-      </>
-    );
-}
+    </>
+  );
+};
 
 export default Board;
