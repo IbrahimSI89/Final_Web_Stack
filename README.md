@@ -14,7 +14,6 @@
 - [Socket.IO Integration](#socketio-integration)
 - [API Endpoints](#api-endpoints)
 - [Contributors](#contributors)
-- [License](#license)
 
 ## Project Overview
 
@@ -164,8 +163,4 @@ python3 run.py
 - **Ibrahim Mahmoud**
 - **Sondos Ahmed**
 
-## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
