@@ -1,5 +1,3 @@
-Here's a comprehensive README file for your real-time chat application:
-
 ---
 
 # Real-Time Chat Application
@@ -118,7 +116,6 @@ source venv/bin/activate
 # Install dependencies
 pip3 install -r requirements.txt
 
-
 # Run the application
 python3 run.py
 ```
@@ -165,6 +162,9 @@ python3 run.py
 - **Ibrahim Mahmoud**
 - **Sondos Ahmed**
 
--------
+## License
 
-###This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
